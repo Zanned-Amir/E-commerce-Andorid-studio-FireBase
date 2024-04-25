@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "569251446555",
+    "firebase_url": "https://amiroso-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "amiroso",
+    "storage_bucket": "amiroso.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569251446555:android:d522cac6647c1173d31dbe",
+        "android_client_info": {
+          "package_name": "com.sph.sbh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmzXEiH7CkW19pm4V0sO4j3R_XJsEl_0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
