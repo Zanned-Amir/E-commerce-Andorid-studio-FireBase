@@ -3,11 +3,13 @@ package com.sph.sbh.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,22 +26,32 @@ import com.sph.sbh.R;
 public class LoginAccount extends AppCompatActivity {
     private FirebaseAuth auth;
     public EditText editTextEmail ,passwordEditText;
+    public TextView forget;
 
     SharedPreferences sharedPreferences;
 
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_account);
-
+        auth = FirebaseAuth.getInstance();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
         editTextEmail =findViewById(R.id.editTextEmail);
         passwordEditText = findViewById(R.id.editTextPassword);
+        forget = findViewById(R.id.forget);
+        forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginAccount.this, ResetEmail.class));
+            }
+        });
 
-        auth = FirebaseAuth.getInstance();
+
 
         sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
     }
@@ -56,17 +68,17 @@ public class LoginAccount extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Login successful
+
                             Toast.makeText(LoginAccount.this, "Login successful", Toast.LENGTH_SHORT).show();
 
-                            // Retrieve user data from Firebase
+
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
                             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
-                                        // User data found, retrieve it
+
                                         String email = snapshot.child("email").getValue(String.class);
                                         String name = snapshot.child("name").getValue(String.class);
                                         String lastName = snapshot.child("lastName").getValue(String.class);
@@ -74,9 +86,12 @@ public class LoginAccount extends AppCompatActivity {
                                         String selectedState = snapshot.child("state").getValue(String.class);
                                         String birthDate = snapshot.child("birthDate").getValue(String.class);
                                         String gender = snapshot.child("gender").getValue(String.class);
+                                        String  addr1 = snapshot.child("addresse1").getValue(String.class);
+                                        String  addr2 = snapshot.child("addresse2").getValue(String.class);
 
 
-                                        // Store user data in SharedPreferences
+
+
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.putString("email", email);
                                         editor.putString("name", name);
@@ -85,6 +100,8 @@ public class LoginAccount extends AppCompatActivity {
                                         editor.putString("state", selectedState);
                                         editor.putString("birthDate", birthDate);
                                         editor.putString("gender", gender);
+                                        editor.putString("addr1", addr1);
+                                        editor.putString("addr2", addr2);
                                         editor.apply();
                                     }
                                 }
@@ -96,10 +113,10 @@ public class LoginAccount extends AppCompatActivity {
                                 }
                             });
 
-                            // Navigate to MainActivity
+
                             startActivity(new Intent(LoginAccount.this, MainActivity.class));
                         } else {
-                            // Login failed
+
                             Toast.makeText(LoginAccount.this, "Login failed: " + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }

@@ -70,7 +70,7 @@ public class ManagmentCart {
             tinyDB.putListObject("CartList", listCart);
             changeNumberItemsListener.changed();
         } else {
-            // Notify the user that the maximum quantity has been reached
+
             Toast.makeText(context, "Maximum quantity reached for this item", Toast.LENGTH_SHORT).show();
         }
     }
@@ -91,4 +91,53 @@ public class ManagmentCart {
     }
 
 
+    public void addToFavorites(ItemsDomain item) {
+        ArrayList<ItemsDomain> favoriteList = getFavoriteList();
+        boolean alreadyExists = false;
+
+
+        for (ItemsDomain favItem : favoriteList) {
+            if (favItem.getTitle().equals(item.getTitle())) {
+                alreadyExists = true;
+                break;
+            }
+        }
+
+        if (!alreadyExists) {
+            favoriteList.add(item);
+            tinyDB.putListObject("FavoriteList", favoriteList);
+            Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, item.getTitle() + " already in Favorites", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void removeFromFavorites(ItemsDomain item) {
+        ArrayList<ItemsDomain> favoriteList = getFavoriteList();
+        int itemIndex = -1;
+
+        // Find the item index in the list
+        for (int i = 0; i < favoriteList.size(); i++) {
+            if (favoriteList.get(i).getTitle().equals(item.getTitle())) {
+                itemIndex = i;
+                break;
+            }
+        }
+
+        if (itemIndex != -1) {
+            favoriteList.remove(itemIndex);
+            tinyDB.putListObject("FavoriteList", favoriteList);
+            Toast.makeText(context, item.getTitle() + " removed from Favorites", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, item.getTitle() + " not found in Favorites", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public ArrayList<ItemsDomain> getFavoriteList() {
+        return tinyDB.getListObject("FavoriteList");
+    }
+
+    public void clearFavoriteList() {
+        tinyDB.remove("FavoriteList");
+        Toast.makeText(context, "FavoriteList cleared", Toast.LENGTH_SHORT).show();
+    }
 }

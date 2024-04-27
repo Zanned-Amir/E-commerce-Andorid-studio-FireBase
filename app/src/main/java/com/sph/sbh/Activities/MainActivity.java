@@ -1,14 +1,13 @@
 package com.sph.sbh.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,11 +30,9 @@ import com.sph.sbh.Helper.ManagmentCart;
 import com.sph.sbh.Model.CategoryDomain;
 import com.sph.sbh.Model.ItemsDomain;
 import com.sph.sbh.Model.SliderItems;
-import com.sph.sbh.R;
 import com.sph.sbh.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends BaseActivity {
     private Button log_out,load;
@@ -45,26 +40,13 @@ public class MainActivity extends BaseActivity {
     Context context;
     private FirebaseAuth auth;
     private ActivityMainBinding binding;
+    private PopularAdapter adap;
+    private ArrayList<ItemsDomain> itemList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
-        // log_out = findViewById(R.id.log_out);
-
-        /* log_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-                Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-                Log.d("Firebase", "out ");
-                // Navigate to LoginActivity after logout
-                startActivity(new Intent(MainActivity.this, StartPage.class));
-                finish(); // Optional: finish current activity to prevent back navigation
-            }
-        });
-        */
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
 
@@ -79,25 +61,49 @@ public class MainActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
 
-        // Get the count of items in the cart
+
 
         int itemCount = ManagmentCart.getCount(this);
-
-// Check if the cart is empty
-        if (itemCount == 0) {
-            // Cart is empty, hide the notification and count
-            binding.notfiy.setVisibility(View.GONE);
-            binding.notfiyCount.setVisibility(View.GONE);
-        } else {
-            // Cart is not empty, show the notification and count
-            binding.notfiy.setVisibility(View.VISIBLE);
-            binding.notfiyCount.setVisibility(View.VISIBLE);
-            // Optionally, you can update the count if needed
-            binding.notfiyCount.setText(String.valueOf(itemCount));
-        }
+        binding.search.clearFocus();
+        binding.searchRecycler.setVisibility(View.GONE);
 
 
 
+
+        binding.search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filerList(newText);
+
+                if (newText.isEmpty()) {
+                    // Show other content and hide search results
+                    binding.searchRecycler.setVisibility(View.GONE);
+                    binding.box6.setVisibility(View.VISIBLE);
+                    binding.box2.setVisibility(View.VISIBLE);
+                    binding.box3.setVisibility(View.VISIBLE);
+                    binding.box4.setVisibility(View.VISIBLE);
+                    binding.box5.setVisibility(View.VISIBLE);
+                } else {
+                    // Hide other content and show search results
+                    binding.searchRecycler.setVisibility(View.VISIBLE);
+                    binding.box6.setVisibility(View.GONE);
+                    binding.box2.setVisibility(View.GONE);
+                    binding.box3.setVisibility(View.GONE);
+                    binding.box4.setVisibility(View.GONE);
+                    binding.box5.setVisibility(View.GONE);
+                }
+
+                return true;
+            }
+        });
+        product();
+
+        updateCartNotification();
 
         initRunner();
         initCategory();
@@ -110,7 +116,53 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private void filerList(String newText) {
+        ArrayList<ItemsDomain> filteredList = new ArrayList<>();
+
+        for(ItemsDomain item: itemList){
+            if(item.getTitle().toLowerCase().contains(newText.toLowerCase())){
+                filteredList.add(item);
+            }
+        }
+        if(filteredList.isEmpty()){
+            Toast.makeText(this,"No data found",Toast.LENGTH_SHORT).show();
+        }else{
+            adap.setFiltredList(filteredList);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCartNotification();
+    }
+
+    private void updateCartNotification() {
+
+        int itemCount = ManagmentCart.getCount(this);
+
+
+        if (itemCount == 0) {
+
+            binding.notfiy.setVisibility(View.GONE);
+            binding.notfiyCount.setVisibility(View.GONE);
+        } else {
+
+            binding.notfiy.setVisibility(View.VISIBLE);
+            binding.notfiyCount.setVisibility(View.VISIBLE);
+
+            binding.notfiyCount.setText(String.valueOf(itemCount));
+        }
+    }
+
     private void buttonNavigation() {
+
+        binding.whish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, WhishList.class));
+            }
+        });
         binding.cartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,11 +176,59 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this,Profile.class));
             }
         });
+        binding.explorer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,ExplorerActivity.class));
+            }
+        });
 
     }
+    private void product() {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Items");
+
+        itemList = new ArrayList<>(); // Initialize itemList here
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        try {
+                            ItemsDomain item = dataSnapshot.getValue(ItemsDomain.class);
+                            if (item != null) {
+                                itemList.add(item); // Add item to itemList
+                            }
+                        } catch (Exception e) {
+                            Log.e("Firebase", "Error converting data", e);
+                        }
+                    }
+
+                    // Update UI with the list of items
+                    if (!itemList.isEmpty()) {
+                        binding.searchRecycler.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        adap = new PopularAdapter(itemList);
+                        binding.searchRecycler.setAdapter(adap); // Set adapter with itemList
+                    } else {
+                        Log.e("Firebase", "No items found");
+                    }
+
+                } else {
+                    Log.e("Firebase", "No data found");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled event
+                Log.e("Firebase", "Database error: " + error.getMessage());
+            }
+        });
+    }
+
 
     private void initPopular() {
-        DatabaseReference myref = database.getReference("Items");
+        DatabaseReference myref = database.getReference("Popular");
         binding.progressBar3.setVisibility(View.VISIBLE);
         ArrayList<ItemsDomain> items = new ArrayList<>();
         myref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -149,7 +249,7 @@ public class MainActivity extends BaseActivity {
                     // Update UI with the list of items
                     if (!items.isEmpty()) {
                         binding.recyclerviewPopular.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-                        binding.recyclerviewPopular.setAdapter(new PopularAdapter(items));
+                        binding.recyclerviewPopular.setAdapter(new PopularAdapter(items,false,true));
                     } else {
                         Log.e("Firebase", "No items found");
                     }
@@ -182,17 +282,14 @@ public class MainActivity extends BaseActivity {
                         CategoryDomain category = dataSnapshot.getValue(CategoryDomain.class);
                         if (category != null) {
                             items.add(category);
-                            // Display a toast for each line of data retrieved
                         }
                     }
                     if (!items.isEmpty()) {
-                        // LinearLayoutManager should be set only once, not inside the loop
+
                         binding.recyclerViewOfficial.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
                         binding.recyclerViewOfficial.setAdapter(new CategoryAdapter(items));
                     } else {
-                        // Handle case where no categories are found
-                        // For example, display a message indicating no categories found
-                        // binding.recyclerViewOfficial.setVisibility(View.GONE);
+
                     }
                 }
                 binding.progressBar2.setVisibility(View.GONE);
@@ -200,8 +297,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle database error
-                // Display a toast indicating the error
+
                 Toast.makeText(MainActivity.this, "Error retrieving data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

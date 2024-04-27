@@ -73,14 +73,14 @@ public class RegisterAccount extends AppCompatActivity {
 
 
 
-        // Set click listener for password visibility toggle
+
         textInputLayoutPassword.setStartIconOnClickListener(v -> {
             // Toggle password visibility
             isPasswordVisible = !isPasswordVisible;
             togglePasswordVisibility();
         });
 
-        // Add text change listener for birth date input
+
         editTextBirthDate.addTextChangedListener(birthDateTextWatcher);
 
 
@@ -99,13 +99,13 @@ public class RegisterAccount extends AppCompatActivity {
 
         String addr1 = addresse1.getText().toString().trim();
         String addr2 = addresse2.getText().toString().trim();
-        // Validate gender
+
         if (gender.isEmpty()) {
             Toast.makeText(RegisterAccount.this, "Choose gender", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Perform date validation
+
         if (!isValidBirthDate(birthDate)) {
             Toast.makeText(RegisterAccount.this, "Invalid birth date", Toast.LENGTH_SHORT).show();
             return;
@@ -113,19 +113,19 @@ public class RegisterAccount extends AppCompatActivity {
             birthDate = convertToDashesFormat(birthDate);
         }
 
-        // Validate passwords match
+
         if (!password.equals(confirmPassword)) {
             Toast.makeText(RegisterAccount.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Validate password length
+
         if (password.length() < 6) {
             Toast.makeText(RegisterAccount.this, "Password should be at least 6 characters long", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Validate name and last name
+
         if (name.isEmpty()) {
             Toast.makeText(RegisterAccount.this, "Enter your name", Toast.LENGTH_SHORT).show();
             return;
@@ -136,19 +136,18 @@ public class RegisterAccount extends AppCompatActivity {
             return;
         }
 
-        // Validate email
+
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(RegisterAccount.this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Validate phone number
+
         if (phoneNumber.isEmpty() || !android.util.Patterns.PHONE.matcher(phoneNumber).matches()) {
             Toast.makeText(RegisterAccount.this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Validate state
         if (selectedState.isEmpty() || selectedState.equals("Select State")) {
             Toast.makeText(RegisterAccount.this, "Select your state", Toast.LENGTH_SHORT).show();
             return;
@@ -163,13 +162,11 @@ public class RegisterAccount extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Registration successful
+
                             Toast.makeText(RegisterAccount.this, "Registration successful", Toast.LENGTH_SHORT).show();
 
-                            // Get the UID of the newly created user
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                            // Set user data under their UID in Firebase Realtime Database
                             databaseReference.child(uid).setValue(user);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -188,13 +185,13 @@ public class RegisterAccount extends AppCompatActivity {
 
                             Toast.makeText(RegisterAccount.this, "Data inserted", Toast.LENGTH_SHORT).show();
 
-                            // Navigate to MainActivity
+
                             Intent intent = new Intent(RegisterAccount.this, Boarding.class);
 
                             startActivity(intent);
                             finish();
                         } else {
-                            // Registration failed
+
                             Toast.makeText(RegisterAccount.this, "Registration failed: " + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }
