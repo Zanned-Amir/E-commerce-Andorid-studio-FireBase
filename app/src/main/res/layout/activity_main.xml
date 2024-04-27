@@ -27,6 +27,7 @@
 
 
             <LinearLayout
+                android:id="@+id/box1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="24dp"
@@ -34,8 +35,8 @@
                 android:layout_marginEnd="24dp"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/editTextText"
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginEnd="16dp"
@@ -44,9 +45,8 @@
                     android:drawableStart="@drawable/search_icon"
                     android:drawablePadding="8dp"
                     android:ems="10"
-                    android:hint="Search anything"
-                    android:inputType="text"
-                    android:padding="8dp" />
+                    app:iconifiedByDefault="false"
+                    app:queryHint="Search Here ...." />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="50dp"
@@ -90,7 +90,20 @@
 
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:clipToOutline="false"
+                android:paddingStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/box2"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="16dp">
@@ -121,7 +134,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/box6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -133,6 +146,7 @@
                 android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/box3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -160,6 +174,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/box4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="24dp"
@@ -186,6 +201,7 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/box5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -235,6 +251,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:id="@+id/explorer"
 
                     android:layout_gravity="center"
                     android:layout_weight="0.25"
@@ -261,6 +278,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:id="@+id/whish"
 
                     android:layout_gravity="center"
                     android:layout_weight="0.25"

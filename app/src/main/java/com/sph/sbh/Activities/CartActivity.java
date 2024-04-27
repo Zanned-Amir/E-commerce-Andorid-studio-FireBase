@@ -1,5 +1,6 @@
 package com.sph.sbh.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -9,12 +10,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sph.sbh.Adapters.CartAdapter;
 import com.sph.sbh.Helper.ChangeNumberItemsListener;
 import com.sph.sbh.Helper.ManagmentCart;
 import com.sph.sbh.Model.ItemsDomain;
+import com.sph.sbh.Model.Modif;
 import com.sph.sbh.Model.Order;
 import com.sph.sbh.R;
 import com.sph.sbh.databinding.ActivityCartBinding;
@@ -37,8 +42,14 @@ public class CartActivity extends AppCompatActivity {
 
         managmentCart = new ManagmentCart(this);
         listCart2 = managmentCart.getListCart();
+        binding.button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyCoupon();
+            }
+        });
 
-        calculatorCart();
+        calculatorCart(0.0);
         setVariable();
         initCartList();
 
@@ -54,7 +65,7 @@ public class CartActivity extends AppCompatActivity {
             binding.scrollViewCart.setVisibility(View.VISIBLE);
         }
         binding.cartView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        binding.cartView.setAdapter(new CartAdapter(managmentCart.getListCart(), this, () -> calculatorCart()));
+        binding.cartView.setAdapter(new CartAdapter(managmentCart.getListCart(), this, () -> calculatorCart(0.0)));
     }
 
     private void setVariable() {
@@ -69,7 +80,17 @@ public class CartActivity extends AppCompatActivity {
                     String orderId = databaseReference.push().getKey();
                     long timestamp = System.currentTimeMillis();
 
-                    Order order = new Order(orderId, timestamp, listCart2);
+
+                    ArrayList<Modif> modifList = new ArrayList<>();
+
+                    for (ItemsDomain item : listCart2) {
+                        String title = item.getTitle();
+                        String count = String.valueOf(item.getNumberinCart());
+                        Modif modif = new Modif(title, count);
+                        modifList.add(modif);
+                    }
+
+                    Order order = new Order(orderId, timestamp, modifList);
 
                     databaseReference.child(uid).child(orderId).setValue(order);
                     Toast.makeText(CartActivity.this, "Order placed successfully", Toast.LENGTH_SHORT).show();
@@ -87,18 +108,58 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
-    private void calculatorCart() {
-        double percentTax=0.02;
-        double  delivery = 0.02;
-        tax = Math.round((managmentCart.getTotalFee()*percentTax*100.0))/100.0;
 
-        double total =Math.round((managmentCart.getTotalFee()+tax+delivery)*100.0)/100.0;
-        double itemTotal = Math.round(managmentCart.getTotalFee()*100)/100;
+    private void calculatorCart(double discount) {
+        double percentTax = 0.02;
+        double delivery = 0.02;
+        tax = Math.round((managmentCart.getTotalFee() * percentTax * 100.0)) / 100.0;
 
-        binding.totalFeeTxt.setText(itemTotal+"DT");
-        binding.taxTxt.setText(tax+"DT");
-        binding.deliverytTxt.setText(delivery+"DT");
-        binding.totalTxt.setText(total+"DT");
+        double total = Math.round((managmentCart.getTotalFee() + tax + delivery) * (1 - discount) * 100.0) / 100.0;
+        double itemTotal = Math.round(managmentCart.getTotalFee() * 100) / 100;
 
+        binding.totalFeeTxt.setText(itemTotal + "DT");
+        binding.taxTxt.setText(tax + "DT");
+        binding.deliverytTxt.setText(delivery + "DT");
+        binding.totalTxt.setText(total + "DT");
     }
+
+    private boolean couponApplied = false;
+
+    private void applyCoupon() {
+        String couponCode = binding.textView18.getText().toString().trim();
+
+        // Check if coupon has already been applied
+        if (couponApplied) {
+            Toast.makeText(CartActivity.this, "Coupon already applied", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference().child("coupons").child(couponCode);
+        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    Toast.makeText(CartActivity.this, "Coupon applied successfully", Toast.LENGTH_SHORT).show();
+
+
+                    couponApplied = true;
+
+
+                    calculatorCart(0.2);
+                } else {
+
+                    Toast.makeText(CartActivity.this, "Invalid coupon code", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                Toast.makeText(CartActivity.this, "Error applying coupon", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

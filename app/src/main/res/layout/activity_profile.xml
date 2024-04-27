@@ -17,16 +17,14 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="46dp"
-            android:scaleType="fitXY"
+            android:layout_width="418dp"
+            android:layout_height="272dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            tools:srcCompat="@drawable/top_background" />
+            app:srcCompat="@drawable/top_background" />
 
         <ImageView
             android:id="@+id/backBtn"
@@ -41,42 +39,30 @@
             app:srcCompat="@drawable/back" />
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="70dp"
-            android:text="Hello"
-            android:textColor="#ffffff"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="UserName"
-            android:textColor="#ffffff"
-            android:textSize="25sp"
+            android:layout_width="176dp"
+            android:layout_height="154dp"
+            android:layout_marginStart="32dp"
+            android:text="Hello Username"
+            android:textColor="#FFFFFF"
+            android:textSize="33sp"
             android:textStyle="bold"
-
-
-            app:layout_constraintStart_toStartOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.516" />
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="114dp"
-            android:layout_height="111dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            android:id="@+id/prof"
+            android:layout_width="128dp"
+            android:layout_height="97dp"
+            android:src="@drawable/profile"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView"
-            app:layout_constraintVertical_bias="0.488"
-            tools:srcCompat="@drawable/profile" />
+            app:layout_constraintHorizontal_bias="0.823"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.108" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -96,7 +82,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -107,13 +94,17 @@
                     android:layout_marginBottom="30dp"
                     android:layout_weight="1"
                     android:background="@drawable/top__banner_background"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/edit"
+                    >
 
                     <ImageView
                         android:id="@+id/imageView3"
                         android:layout_width="wrap_content"
                         android:layout_height="53dp"
-                        android:layout_margin="8dp" />
+                        android:layout_margin="8dp"
+                        android:src="@drawable/editprofile"
+                        />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -290,8 +281,6 @@
                     android:text=""
                     android:textStyle="bold" />
             </LinearLayout>
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -299,17 +288,17 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/Adress"
+                    android:id="@+id/addr1"
                     android:layout_width="2dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="35dp"
                     android:layout_marginBottom="20dp"
                     android:layout_weight="1"
-                    android:text="adress"
+                    android:text="adresse1"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/Adress_content"
+                    android:id="@+id/addr1_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="35dp"
@@ -317,14 +306,52 @@
                     android:layout_weight="1"
                     android:text=""
                     android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/addr2"
+                    android:layout_width="2dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="1"
+                    android:text="adresse2"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/addr2_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
 
                 <Button
                     android:id="@+id/Logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="110dp"
                     android:backgroundTint="#169955"
                     android:text="logout" />
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 

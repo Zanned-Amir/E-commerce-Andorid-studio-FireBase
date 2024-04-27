@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -32,6 +33,8 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity {
     ActivityDetailBinding binding;
     private ItemsDomain object;
+    private SharedPreferences sharedPreferences;
+
     private  int numberOrder=1;
     private ManagmentCart managmentCart;
     private Handler slideHandle = new Handler();
@@ -40,10 +43,12 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        sharedPreferences = getSharedPreferences("whishList", MODE_PRIVATE);
         managmentCart = new ManagmentCart(this);
+        binding.sizoo.setVisibility(View.GONE);
         getBundles();
         initbanners();
-        initSize();
+
         setupViewPager();
     }
 
@@ -83,9 +88,18 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 object.setNumberinCart(numberOrder);
                 managmentCart.insertItem(object);
+
             }
         });
         binding.backBtn.setOnClickListener(v -> finish());
+        binding.favBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                managmentCart.addToFavorites(object);
+
+
+            }
+        });
     }
     private void setupViewPager(){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());

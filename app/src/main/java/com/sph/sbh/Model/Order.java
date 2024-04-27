@@ -5,13 +5,13 @@ import java.util.ArrayList;
 public class Order {
     private String orderId;
     private long timestamp;
-    private ArrayList<ItemsDomain> items;
+    private ArrayList<Modif> items;
 
     public Order() {
 
     }
 
-    public Order(String orderId, long timestamp, ArrayList<ItemsDomain> items) {
+    public Order(String orderId, long timestamp, ArrayList<Modif> items) {
         this.orderId = orderId;
         this.timestamp = timestamp;
         this.items = items;
@@ -33,12 +33,14 @@ public class Order {
         this.timestamp = timestamp;
     }
 
-    public ArrayList<ItemsDomain> getItems() {
+    public ArrayList<Modif> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<ItemsDomain> items) {
+    public void setItems(ArrayList<Modif> items) {
         this.items = items;
     }
+
+
 }
 
