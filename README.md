@@ -5,4 +5,4 @@ E-commerce Android template, featuring Firebase, TinyDB, and SharedPreferences i
 
 # Demo
 
-[click here to see demo ](https://drive.google.com/drive/folders/1-v3LHgxzy9_hhk2FXSfSnJy5nxIxEh2a))
+[click here to see demo ](https://drive.google.com/drive/folders/1-v3LHgxzy9_hhk2FXSfSnJy5nxIxEh2a)
