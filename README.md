@@ -3,13 +3,13 @@
 E-commerce Android template, featuring Firebase, TinyDB, and SharedPreferences integration.
 
 ## Images
-
+<img src="image6.jpeg" alt="image" width="300"/>
 <img src="image1.jpg" alt="image" width="300"/>
 <img src="image2.jpg" alt="image" width="300"/>
 <img src="image3.jpeg" alt="image" width="300"/>
 <img src="image4.jpeg" alt="image" width="300"/>
 <img src="image5.jpeg" alt="image" width="300"/>
-<img src="image6.jpeg" alt="image" width="300"/>
+
 
 ## Presentation
 
