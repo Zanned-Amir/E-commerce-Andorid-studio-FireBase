@@ -1,9 +1,11 @@
 # E-commerce-Andorid-studio-FireBase
 - E-commerce Android template, featuring Firebase, TinyDB, and SharedPreferences integration
- - [image](image1.png)
- - [image](image2.png)
- - [image](image3.png)
- - [image](image4.png)
+ - [image](image1.jpg)
+ - [image](image2.jpg)
+ - [image](image3.jpeg)
+ - [image](image4.jpeg)
+ - [image](image5.jpeg)
+ -  [image](image6.jpeg)
 # presentation
 - [click here to see description](projetappli.pdf)
 
